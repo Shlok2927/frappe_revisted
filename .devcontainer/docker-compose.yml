@@ -1,0 +1,42 @@
+version: "3.7"
+services:
+  mariadb:
+    image: docker.io/mariadb:10.6
+    platform: linux/amd64
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --skip-character-set-client-handshake
+      - --skip-innodb-read-only-compressed # Temporary fix for MariaDB 10.6
+    environment:
+      MYSQL_ROOT_PASSWORD: 123
+    volumes:
+      - mariadb-data:/var/lib/mysql
+
+  redis-cache:
+    image: docker.io/redis:alpine
+    platform: linux/amd64
+
+  redis-queue:
+    image: docker.io/redis:alpine
+    platform: linux/amd64
+
+  frappe:
+    image: docker.io/frappe/bench:latest
+    platform: linux/amd64
+    command: sleep infinity
+    environment:
+      - SHELL=/bin/bash
+    volumes:
+      - ..:/workspace:cached  # GitHub Codespaces automatically mounts the repo here
+      - ${HOME}/.ssh:/home/frappe/.ssh:ro  # Mount SSH keys (read-only) if needed
+    working_dir: /workspace/development  # Set working directory correctly in the container
+    ports:
+      - 8000-8005:8000-8005  # Expose ports for development
+      - 9000-9005:9000-9005  # Expose ports for development
+
+volumes:
+  mariadb-data:
+  # Uncomment the next lines if you plan to use PostgreSQL or Mailpit
+  # postgresql-data:
+  # mailpit-data:

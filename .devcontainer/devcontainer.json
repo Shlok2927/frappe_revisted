@@ -1,0 +1,31 @@
+{
+  "name": "Frappe Bench",
+  "dockerComposeFile": "./docker-compose.yml",  // Path to the Docker Compose file
+  "service": "frappe",  // The service to use for the Codespace
+  "workspaceFolder": "/workspace/development",  // The workspace directory inside the container
+  "forwardPorts": [8000, 9000, 6787],  // Ports to forward from the container to Codespace
+  "shutdownAction": "stopCompose",  // Stops the Compose services when Codespace shuts down
+  "mounts": [
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/frappe/.ssh,type=bind,consistency=cached"  // Mount SSH keys (if required)
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-vscode.live-server",
+        "grapecity.gc-excelviewer",
+        "mtxr.sqltools",
+        "visualstudioexptteam.vscodeintellicode"
+      ],
+      "settings": {
+        "terminal.integrated.profiles.linux": {
+          "frappe bash": {
+            "path": "/bin/bash"
+          }
+        },
+        "terminal.integrated.defaultProfile.linux": "frappe bash",
+        "debug.node.autoAttach": "disabled"
+      }
+    }
+  }
+}
